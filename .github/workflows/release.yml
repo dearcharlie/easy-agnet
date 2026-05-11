@@ -71,68 +71,6 @@ jobs:
           releaseDraft: true
           prerelease: false
 
-  build-macos:
-    name: Build macOS Bundle
-    runs-on: macos-latest
-    timeout-minutes: 60
-
-    env:
-      CARGO_TERM_COLOR: always
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@v1
-        with:
-          toolchain: stable
-          targets: aarch64-apple-darwin,x86_64-apple-darwin
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install npm dependencies
-        run: npm ci
-
-      - name: Cache npm
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: npm-macos-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            npm-macos-
-
-      - name: Setup cargo cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            apps/desktop/src-tauri/target
-          key: cargo-macos-${{ hashFiles('apps/desktop/src-tauri/Cargo.lock') }}
-          restore-keys: |
-            cargo-macos-
-
-      - name: Build Tauri app
-        uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          projectPath: apps/desktop
-          tagName: ${{ github.ref_name }}
-          releaseName: "Easy-Agent Novel Studio ${{ github.ref_name }}"
-          releaseBody: |
-            ## 更新内容
-
-            ### 下载
-
-            - **.dmg**: macOS 安装包
-          releaseDraft: true
-          prerelease: false
-
   build-linux:
     name: Build Linux Bundle
     runs-on: ubuntu-22.04
