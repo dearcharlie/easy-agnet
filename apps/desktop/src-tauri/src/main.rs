@@ -62,7 +62,7 @@ fn main() {
         ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { .. } = event {
-                let state: tauri::State<HermesProcess> = window.state();
+                let state = window.app_handle().state::<HermesProcess>();
                 if let Ok(mut proc) = state.0.lock() {
                     if let Some(mut child) = proc.take() {
                         child.kill().ok();
