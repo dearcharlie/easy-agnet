@@ -3,6 +3,7 @@
 
 use std::process::{Child, Command};
 use std::sync::Mutex;
+use tauri::Manager;
 
 struct HermesProcess(Mutex<Option<Child>>);
 
