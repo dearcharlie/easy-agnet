@@ -27,12 +27,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: apps/desktop/package-lock.json
 
       - name: Install npm dependencies
         run: npm ci
-        working-directory: apps/desktop
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-windows-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-windows-
 
       - name: Setup cargo cache
         uses: actions/cache@v4
@@ -85,12 +90,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
-          cache-dependency-path: apps/desktop/package-lock.json
 
       - name: Install npm dependencies
         run: npm ci
-        working-directory: apps/desktop
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: npm-macos-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-macos-
 
       - name: Setup cargo cache
         uses: actions/cache@v4
