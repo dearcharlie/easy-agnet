@@ -1,0 +1,13 @@
+node_modules/
+dist/
+target/
+*.pyc
+__pycache__/
+.env
+*.egg-info/
+build/
+apps/desktop/node_modules/
+apps/desktop/src-tauri/target/
+dist/installers/
+.opencode/
+**/__pycache__/

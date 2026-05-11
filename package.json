@@ -1,0 +1,15 @@
+{
+  "name": "easy-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Easy-Agent: AI Novel Writing Assistant powered by Hermes Agent",
+  "scripts": {
+    "setup": "bash scripts/setup.sh",
+    "dev:desktop": "cd apps/desktop && npm run dev",
+    "lint": "echo 'lint placeholder'",
+    "typecheck": "echo 'typecheck placeholder'"
+  },
+  "workspaces": [
+    "apps/*"
+  ]
+}
