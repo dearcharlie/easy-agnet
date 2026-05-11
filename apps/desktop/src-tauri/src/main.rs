@@ -2,10 +2,9 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::process::{Child, Command};
-use std::sync::Mutex;
-use tauri::Manager;
+use std::sync::{Arc, Mutex};
 
-struct HermesProcess(Mutex<Option<Child>>);
+struct HermesProcess(Arc<Mutex<Option<Child>>>);
 
 #[tauri::command]
 fn start_hermes(state: tauri::State<HermesProcess>) -> Result<String, String> {
@@ -53,19 +52,20 @@ async fn check_hermes_health() -> Result<String, String> {
 }
 
 fn main() {
+    let process = Arc::new(Mutex::new(None));
+    let close_process = process.clone();
+
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .manage(HermesProcess(Mutex::new(None)))
+        .manage(HermesProcess(process))
         .invoke_handler(tauri::generate_handler![
             start_hermes,
             stop_hermes,
             check_hermes_health,
         ])
-        .on_window_event(|window, event| {
+        .on_window_event(move |_window, event| {
             if let tauri::WindowEvent::CloseRequested { .. } = event {
-                let app = window.app_handle().clone();
-                let state = app.state::<HermesProcess>();
-                if let Ok(mut proc) = state.0.lock() {
+                if let Ok(mut proc) = close_process.lock() {
                     if let Some(mut child) = proc.take() {
                         child.kill().ok();
                         child.wait().ok();
